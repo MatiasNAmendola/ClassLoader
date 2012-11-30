@@ -1,11 +1,3 @@
-ClassLoader
-===========
-
-A class to autoload classes in PHP
-
-LICENSE
-=======
-
 MIT License
 
 Copyright (c) <2012> <Manuel Jesús Carrascosa de la Blanca> <mjcarrascosa@gmail.com>
