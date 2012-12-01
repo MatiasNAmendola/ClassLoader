@@ -44,11 +44,19 @@ class ClassLoader {
     /**
      *
      * @param string|array $path
-     * @return ClassLoader 
      */
-    public static function getLoader($path = null) {
+    public static function initialize($path) {
         if(empty(static::$loader)) {
             static::$loader = new ClassLoader($path);
+        }        
+    }
+    /**
+     *
+     * @return ClassLoader 
+     */
+    public static function getLoader() {
+        if(empty(static::$loader)) {
+            static::initialize();
         }
         
         return static::$loader;
@@ -75,18 +83,23 @@ class ClassLoader {
      * @param string $className 
      */
     public function loadClass($className) {
-        $className = ltrim($className, '\\');
-        $fileName  = '';
-        $namespace = '';
-        if ($lastNsPos = strrpos($className, '\\')) {
-            $namespace = substr($className, 0, $lastNsPos);
-            $className = substr($className, $lastNsPos + 1);
-            $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-        }
-        $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
         
-        if($classPath = $this->getClassPath($fileName)) {
-            require $classPath;
+        if(isset($this->classes[$className])) {
+            require $this->classes[$className];
+        } else {
+            $className = ltrim($className, '\\');
+            $fileName  = '';
+            $namespace = '';
+            if ($lastNsPos = strrpos($className, '\\')) {
+                $namespace = substr($className, 0, $lastNsPos);
+                $className = substr($className, $lastNsPos + 1);
+                $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+            }
+            $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+        
+            if($classPath = $this->getClassPath($fileName)) {
+                require $classPath;
+            }
         }
     }
     
@@ -108,8 +121,8 @@ class ClassLoader {
     
     /**
      *
-     * @param type $className
-     * @param type $classPath
+     * @param string $className
+     * @param string $classPath
      * @return boolean 
      */
     public function setClassPath($className, $classPath) {
@@ -119,6 +132,23 @@ class ClassLoader {
         }
         
         return false;
+    }
+    
+    /**
+     *
+     * @param array $classes
+     * @return int 
+     */
+    public function setClassesPath($classes) {
+        $classesAdded = 0;
+        
+        foreach($classes as $className => $classPath) {
+            if($this->setClassPath($className, $classPath)) {
+                $classesAdded++;
+            }
+        }
+        
+        return $classesAdded;
     }
 }
 

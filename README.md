@@ -3,6 +3,17 @@ ClassLoader
 
 A class to autoload classes in PHP
 
+USAGE
+=====
+
+```php
+<?php
+
+require 'path\to\ClassLoader';
+
+ClassLoader::initialize();
+```
+
 LICENSE
 =======
 
