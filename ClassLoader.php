@@ -24,9 +24,15 @@ class ClassLoader {
     
     /**
      *
+     * @var array 
+     */
+    private $classes;
+    
+    /**
+     *
      * @param system $path 
      */
-    private function __construct($path) {
+    private function __construct($path = null, $classes = null) {
         if(null === $path) {
             $path = __DIR__;
         }
@@ -98,6 +104,21 @@ class ClassLoader {
         }
         
         return null;
+    }
+    
+    /**
+     *
+     * @param type $className
+     * @param type $classPath
+     * @return boolean 
+     */
+    public function setClassPath($className, $classPath) {
+        if(file_exists($classPath)) {
+            $this->classes[$className] = $classPath;
+            return true;
+        }
+        
+        return false;
     }
 }
 
