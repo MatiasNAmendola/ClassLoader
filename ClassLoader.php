@@ -1,9 +1,31 @@
 <?php
+/*
+ * (c) 2012 Manuel Jesús Carrascosa de la Blanca
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+/**
+ * 
+ * @author Manuel Jesús Carrascosa de la Blanca <mjcarrascosa@gmail.com>
+ */
 class ClassLoader {
+    /**
+     *
+     * @var ClassLoader 
+     */
     private static $loader;
+    /**
+     *
+     * @var array 
+     */
     private $path;
     
+    /**
+     *
+     * @param system $path 
+     */
     private function __construct($path) {
         if(null === $path) {
             $path = __DIR__;
@@ -13,6 +35,11 @@ class ClassLoader {
         spl_autoload_register(array($this, 'loadClass'));
     }
     
+    /**
+     *
+     * @param string|array $path
+     * @return ClassLoader 
+     */
     public static function getLoader($path = null) {
         if(empty(static::$loader)) {
             static::$loader = new ClassLoader($path);
@@ -21,6 +48,10 @@ class ClassLoader {
         return static::$loader;
     }
     
+    /**
+     *
+     * @param string|array $path 
+     */
     public function addPath($path) {
         if(is_array($path)) {
             foreach($path as $pathItem) {
@@ -33,6 +64,10 @@ class ClassLoader {
         }
     }
     
+    /**
+     *
+     * @param string $className 
+     */
     public function loadClass($className) {
         $className = ltrim($className, '\\');
         $fileName  = '';
@@ -49,6 +84,11 @@ class ClassLoader {
         }
     }
     
+    /**
+     *
+     * @param string $className
+     * @return string|null 
+     */
     private function getClassPath($className) {
         foreach($this->path as $path) {
             $classPath = $path.DIRECTORY_SEPARATOR.$className;
